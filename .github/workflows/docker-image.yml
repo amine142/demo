@@ -15,4 +15,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file devops/php/Dockerfile --tag php:$(date +%s) && docker build . --file devops/js/Dockerfile --tag js:$(date +%s)
+      run: docker build . --file devops/php/Dockerfile --tag php:latest && docker build . --file devops/js/Dockerfile --tag js:latest && docker login docker.io --username "amine142" --password "1992e9cb-0bb2-4a27-8ca9-a7c7973e9a3b" && docker tag php:latest amine142/php:latest && docker push amine142/php:latest  && docker tag js:latest amine142/js:latest && docker push amine142/js:latest
