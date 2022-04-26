@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    app: front
+  name: front
+spec:
+  replicas: 1
+  strategy: {}
+  selector:
+      matchLabels:
+          app: front
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: front
+    spec:
+      containers:
+      - image: docker.io/amine142/js:latest
+        name: front
+        ports:
+        - containerPort: 8081
+        resources: {}
+        tty: true
+      hostname: front
+      restartPolicy: Always
+status: {}

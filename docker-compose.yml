@@ -24,7 +24,8 @@ services:
       build:
         context: .
         dockerfile: './devops/php/Dockerfile'
-      restart: "unless-stopped"
+      restart: "always"
+      image: docker.io/amine142/php:latest
       hostname: 'backend'
       depends_on:
         - postgres
@@ -37,7 +38,9 @@ services:
       build:
         context: .
         dockerfile: './devops/js/Dockerfile'
-      restart: "unless-stopped"
+        
+      image: docker.io/amine142/js:latest
+      restart: "always"
       hostname: 'front'
       depends_on:
         - back

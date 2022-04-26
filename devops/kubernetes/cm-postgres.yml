@@ -1,0 +1,27 @@
+## YAML Template.
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  creationTimestamp: 2016-02-18T19:14:38Z
+  name: postgres-config
+  namespace: default
+  resourceVersion: "651"
+  uid: dadce046-d673-11e5-8cd0-68f728db1985
+data:
+  POSTGRES_PASSWORD: symfony
+  POSTGRES_USER: symfony
+  01-init.sh: |
+        #!/bin/bash
+        set -e
+        export PGPASSWORD=$POSTGRES_PASSWORD;
+        psql -v ON_ERROR_STOP=1 -U $POSTGRES_USER -d $POSTGRES_DB <<-EOSQL
+         BEGIN;
+            CREATE SEQUENCE article_id_seq INCREMENT BY 1 MINVALUE 1 START 1;
+            CREATE TABLE article (id  SERIAL, title VARCHAR(255) NOT NULL, content TEXT NOT NULL, PRIMARY KEY(id));
+           
+            INSERT INTO article ( title, "content") VALUES( 
+            ( select  concat('title', floor(random() * 100 )::int+1) , concat('content', floor(random() * 100 )::int+1) from generate_series(1,100) ) as tbl(title, content) order by title ASC;
+            );
+          COMMIT;
+        EOSQL

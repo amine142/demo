@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: postgres
+  name: postgres
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+      matchLabels:
+          io.kompose.service: postgres
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: postgres
+    spec:
+      containers:
+      - env:
+        - name: POSTGRES_DB
+          value: app
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+                name: postgres-config
+                key: POSTGRES_PASSWORD
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+                name: postgres-config
+                key: POSTGRES_USER
+        image: postgres:13
+        name: postgres
+        #command: [ "/bin/bash", "-c", " /docker-entrypoint-initdb.d/01-init.sh" ]
+        ports:
+        - containerPort: 5432
+        resources: {}
+        volumeMounts:
+        - mountPath: /docker-entrypoint-initdb.d/
+          name: postgres-claim0
+        - mountPath: /docker-entrypoint-initdb.d/01-init.sh
+          name: postgres-config
+          subPath: 01-init.sh
+      restartPolicy: Always
+      hostname: postgres
+      volumes:
+      - name: postgres-claim0
+        persistentVolumeClaim:
+          claimName: postgres-claim0
+      - name: postgres-config
+        configMap:
+           name: postgres-config
+           defaultMode: 0755
+status: {}

@@ -23,4 +23,4 @@ RUN npm install
 RUN npm run build
 RUN a2enmod headers 
 CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
-EXPOSE 80
+EXPOSE 80 8081
